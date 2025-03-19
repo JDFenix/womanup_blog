@@ -1,0 +1,227 @@
+﻿@using womanup_blog.Models
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 text-white shadow-sm"
+     style="background: linear-gradient(to bottom right, #9F09B1 10%, #72098A 60%, #450963 100%);">
+    <div class="container-fluid">
+        <div class="row align-items-center py-2">
+            <button class="btn col-auto border-0 bg-transparent d-flex align-items-center"
+                    type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                    aria-controls="staticBackdrop">
+                <i class="bi bi-list fs-3 text-light"></i>
+            </button>
+            <a class="navbar-brand text-center col me-5 fw-bold" href="">
+                <span class="fs-4">WomanUp</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start rounded-end"
+     style="width:80%; background: linear-gradient(to bottom right, #9F09B1 10%, #72098A 60%, #450963 100%);"
+     data-bs-backdrop="true" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+
+    <div class="offcanvas-header d-flex justify-content-between align-items-center pb-2">
+        <button class="bg-transparent border-0" id="staticBackdropLabel">
+            <i class="bi bi-pencil-square fs-2 text-white"></i>
+        </button>
+        <button type="button" class="bg-transparent border-0 ms-5" data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="bi bi-x-circle fs-2 text-white"></i>
+        </button>
+    </div>
+
+    <div class="offcanvas-body pt-0 text-white">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="d-flex flex-column align-items-center">
+                <div class="position-relative mb-3">
+                    <img src="https://www.w3schools.com/w3images/avatar5.png"
+                         class="rounded-circle img-fluid shadow-sm border border-2 border-white"
+                         style="width: 120px; height: 120px; object-fit: cover;" alt="avatar" />
+                </div>
+                <p class="mb-1 text-center fs-5 fw-bold">ROCÍO FRAGOSO OLIVARES</p>
+                <span class="opacity-75 fs-6">rocio_15@gmail.com</span>
+            </div>
+        </div>
+
+        <div class="row d-flex flex-column text-center mt-3">
+            @foreach (var menuItem in MenuItems)
+            {
+                if (menuItem.Title == "Calificanos")
+                {
+                    <!-- En lugar de navegar, abrimos el modal de calificación -->
+                    <button class="btn text-white text-decoration-none p-0"
+                            data-bs-toggle="modal" data-bs-target="#ratingModal">
+                        <div class="border-top border-2 menu-item">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <i class="@menuItem.Icon me-3 fs-5"></i>
+                                <span class="fs-5">@menuItem.Title</span>
+                            </div>
+                        </div>
+                    </button>
+                }
+                else
+                {
+                    <button @onclick="() => NavigateAndCloseOffcanvas(menuItem.Route)"
+                            class="btn text-white text-decoration-none p-0">
+                        <div class="border-top border-2 menu-item">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <i class="@menuItem.Icon me-3 fs-5"></i>
+                                <span class="fs-5">@menuItem.Title</span>
+                            </div>
+                        </div>
+                    </button>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Calificación -->
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"
+             style="background: linear-gradient(to bottom right, #9F09B1 10%, #72098A 60%, #450963 100%);
+                color: #fff; border-radius: 10px;">
+            <!-- Cabecera con el botón de cerrar -->
+            <div class="modal-header border-0 d-flex justify-content-end">
+                <button type="button" class="bg-transparent border-0" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-circle fs-4 text-white"></i>
+                </button>
+            </div>
+
+            <!-- Contenido del modal: formulario con rating y comentario -->
+            <div class="modal-body text-center pt-0">
+                <h5 class="fw-bold mb-2" id="ratingModalLabel">Califícanos</h5>
+                <p class="mb-4">En Woman Up nos importa mucho tu opinión, ayúdanos a mejorar</p>
+
+                <form @onsubmit="SendRating">
+                    <!-- Rating con inputs radio para que se pueda POSTEAR o leer en Blazor -->
+                    <div class="star-rating mb-3">
+                        <!-- Cinco radios, del 5 al 1, con la misma propiedad 'ratingValue' -->
+                        <input type="radio" id="star5" name="rating" value="5" @onchange="() => ratingValue = 5" />
+                        <label for="star5" class="bi bi-star-fill fs-3"></label>
+
+                        <input type="radio" id="star4" name="rating" value="4" @onchange="() => ratingValue = 4" />
+                        <label for="star4" class="bi bi-star-fill fs-3"></label>
+
+                        <input type="radio" id="star3" name="rating" value="3" @onchange="() => ratingValue = 3" />
+                        <label for="star3" class="bi bi-star-fill fs-3"></label>
+
+                        <input type="radio" id="star2" name="rating" value="2" @onchange="() => ratingValue = 2" />
+                        <label for="star2" class="bi bi-star-fill fs-3"></label>
+
+                        <input type="radio" id="star1" name="rating" value="1" @onchange="() => ratingValue = 1" />
+                        <label for="star1" class="bi bi-star-fill fs-3"></label>
+                    </div>
+
+                    <!-- Comentario -->
+                    <div class="mb-3 px-3">
+                        <label for="comment" class="form-label fw-bold">Deja un comentario</label>
+                        <textarea class="form-control" id="comment" @bind="comment" rows="3"
+                                  placeholder="Escribe tu opinión aquí..."></textarea>
+                    </div>
+
+                    <!-- Botón Enviar -->
+                    <div class="d-flex justify-content-center">
+                        <button type="submit"
+                                class="btn text-white px-4"
+                                style="background-color: #C20CC7;">
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .menu-item {
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+        .menu-item:hover, .menu-item:active {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+    .navbar-brand span {
+        position: relative;
+    }
+
+        .navbar-brand span::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -3px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s;
+        }
+
+    .navbar-brand:hover span::after {
+        width: 100%;
+    }
+
+    .offcanvas {
+        transition: transform 0.3s ease-in-out !important;
+    }
+
+    .list-group-item {
+        background-color: transparent !important;
+    }
+
+ 
+    .star-rating {
+        direction: rtl;
+        display: inline-flex;
+    }
+
+        .star-rating input[type="radio"] {
+            display: none; 
+        }
+
+        .star-rating label {
+            color: #999;
+            cursor: pointer;
+            margin: 0 3px;
+        }
+         
+            .star-rating label:hover,
+            .star-rating label:hover ~ label {
+                color: gold;
+            }
+   
+        .star-rating input[type="radio"]:checked ~ label {
+            color: gold;
+        }
+</style>
+
+@code {
+    private List<MenuItemModel> MenuItems = new List<MenuItemModel>
+    {
+        new MenuItemModel { Title = "Inicio", Icon = "bi bi-house-fill", Route = "/" },
+        new MenuItemModel { Title = "Acerca de...", Icon = "bi bi-info-circle", Route = "/about" },
+        new MenuItemModel { Title = "Servicios", Icon = "bi bi-briefcase", Route = "/services" },
+        new MenuItemModel { Title = "Calificanos", Icon = "bi bi-star", Route = "/rating" },
+        new MenuItemModel { Title = "Contactanos", Icon = "bi bi-envelope", Route = "/contact" }
+    };
+
+    private int ratingValue; 
+    private string comment; 
+
+    private async Task NavigateAndCloseOffcanvas(string route)
+    {
+        await JSRuntime.InvokeVoidAsync("hideOffcanvas");
+        NavigationManager.NavigateTo(route);
+    }
+
+    private void SendRating()
+    {
+       
+        Console.WriteLine($"El usuario seleccionó {ratingValue} estrellas.");
+        Console.WriteLine($"Comentario: {comment}");
+    }
+}
