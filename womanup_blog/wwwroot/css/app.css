@@ -5,6 +5,7 @@ body {
     padding: 0;
     overflow-x: hidden;
     background-color: var(--background-color);
+    padding-bottom: 30px; 
 }
 
 .page {
@@ -79,24 +80,6 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #blazor-error-ui {
     background: lightyellow;

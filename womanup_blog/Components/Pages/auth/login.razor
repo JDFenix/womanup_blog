@@ -1,0 +1,227 @@
+﻿@page "/login"
+
+<style>
+    body {
+        background: linear-gradient(135deg, #6a1b9a, #ffa000);
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 15px;
+    }
+
+    .auth-container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+        .auth-container h2 {
+            color: #6a1b9a;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .auth-container img {
+            width: 120px; 
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+            .auth-container input:focus {
+                border-color: #6a1b9a;
+                box-shadow: 0 0 10px rgba(106, 27, 154, 0.5);
+                color: white;
+            }
+
+        .auth-container button {
+            background-color: #ffa000;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+            .auth-container button:hover {
+                background-color: #e69100;
+            }
+
+    .social-login button {
+        background-color: #6a1b9a;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .social-login button:hover {
+            background-color: #4a148c;
+            color:white
+        }
+
+    .phone-confirmation {
+        margin-top: 15px;
+        color: #6a1b9a;
+        font-size: 0.9rem;
+    }
+
+        .phone-confirmation input {
+            margin-top: 8px;
+        }
+
+    .switch-auth {
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+        .switch-auth a {
+            color: #6a1b9a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .switch-auth a:hover {
+                text-decoration: underline;
+            }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+    /* Ajustes para pantallas pequeñas */
+    @@media (max-width: 576px) {
+        .auth-container {
+            padding: 15px;
+        }
+
+            .auth-container h2 {
+                font-size: 1.3rem;
+            }
+
+            .auth-container img {
+                width: 100px; /* Tamaño más pequeño para móviles */
+            }
+
+            .auth-container input, .auth-container button, .social-login button {
+                font-size: 0.85rem;
+            }
+    }
+</style>
+
+<div class="auth-container" id="loginContainer">
+    <!-- Silueta de una mujer -->
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" alt="Silueta de mujer">
+    <h2>Iniciar Sesión</h2>
+    <input type="email" class="form-control" placeholder="Correo electrónico" required>
+    <input type="password" class="form-control" placeholder="Contraseña" required>
+    <button type="submit" class="btn">Iniciar Sesión</button>
+    <div class="social-login mt-3">
+        <button onclick="loginWithGmail()" class="btn">
+            <i class="fab fa-google"></i> Iniciar con Gmail
+        </button>
+        <button onclick="loginWithTwitter()" class="btn">
+            <i class="fab fa-twitter"></i> Iniciar con Twitter
+        </button>
+    </div>
+    <div class="switch-auth">
+        ¿No tienes una cuenta? <a href="#" onclick="showRegister()">Regístrate</a>
+    </div>
+</div>
+
+<div class="auth-container" id="registerContainer" style="display: none;">
+    <!-- Silueta de una mujer -->
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" alt="Silueta de mujer">
+    <h2>Regístrate</h2>
+    <input type="email" class="form-control" placeholder="Correo electrónico" required>
+    <input type="password" class="form-control" placeholder="Contraseña" required>
+    <div class="phone-confirmation">
+        <input type="tel" class="form-control" placeholder="Número de teléfono" required>
+    </div>
+    <button type="submit" class="btn">Registrarse</button>
+    <div class="social-login mt-3">
+        <button onclick="registerWithGmail()" class="btn text-white">
+        <i class="fa-brands fa-google"></i> Registrarse con Gmail
+        </button>
+        <button onclick="registerWithTwitter()" class="btn">
+           <i class="bi bi-twitter-x"></i> Registrarse con X
+        </button>
+
+    </div>
+    <div class="switch-auth">
+        ¿Ya tienes una cuenta? <a href="#" onclick="showLogin()">Inicia Sesión</a>
+    </div>
+</div>
+
+<script>
+    // Mostrar registro u inicio de sesión
+    function showRegister() {
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("registerContainer").style.display = "block";
+    }
+
+    function showLogin() {
+        document.getElementById("registerContainer").style.display = "none";
+        document.getElementById("loginContainer").style.display = "block";
+    }
+
+    // // Funciones de inicio de sesión y registro (simuladas)
+    // function loginWithGmail() {
+    //     alert("Iniciar sesión con Gmail");
+    // }
+
+    // function loginWithTwitter() {
+    //     alert("Iniciar sesión con Twitter");
+    // }
+
+    // function registerWithGmail() {
+    //     alert("Registrarse con Gmail");
+    // }
+
+    // function registerWithTwitter() {
+    //     alert("Registrarse con Twitter");
+    // }
+</script>
