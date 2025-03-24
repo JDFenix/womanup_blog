@@ -1,14 +1,67 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+	<div class="sidebar">
+		<NavMenu />
+	</div>
 
-    <main>
-   
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+	<main>
+
+		<article class="content px-4">
+			@Body
+
+
+
+			<div id="help-card" class="card mt-2 mb-5 rounded-4 text-light shadow-sm" style="background-color:#6D28D9">
+				<div class="card-body">
+					<div class="text-start">
+						<div class="row align-items-center">
+							<div class="col-2">
+								<i class="bi bi-exclamation-circle fs-4"></i>
+							</div>
+							<div class="col-10">
+								<h5 class="fw-bold mb-1">¿Necesitas ayuda?</h5>
+								<span class="opacity-75">
+									Disponible 24/7 para emergencias
+								</span>
+							</div>
+							<div class="col-12 mt-2">
+								<button class="btn btn-light w-100 rounded-pill fw-bold" @onclick="MakeCall" type="button">
+									<i class="bi bi-telephone-fill me-2"></i>Llamar
+								</button>
+							</div>
+							<div class="col-12 mt-2">
+								<button class="btn btn-light w-100 rounded-pill fw-bold" @onclick="OpenWhatsApp" type="button">
+									<i class="bi bi-whatsapp me-2"></i>WhatsApp
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</main>
 </div>
+
+
+@code {
+
+	private async Task OpenWhatsApp()
+	{
+		string number = "1234567890";
+		string message = "Hola, necesito ayuda";
+		await Launcher.OpenAsync($"https://wa.me/{number}?text={Uri.EscapeDataString(message)}");
+	}
+
+	void MakeCall()
+	{
+		try
+		{
+			PhoneDialer.Open("1234567890");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine("Error al intentar abrir la app de teléfono: " + ex.Message);
+		}
+	}
+}
